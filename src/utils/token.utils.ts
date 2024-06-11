@@ -7,9 +7,9 @@ export const signToken = async (id: string, email: string) => {
       sub: id,
       email,
     };
-    let token: string = sign(payload, secret, {
+    let token = sign(payload, secret, {
       expiresIn: "1h",
-    });
+    }) as string;
     return token;
   } catch (error: any) {
     throw new JsonWebTokenError(error);
@@ -18,7 +18,11 @@ export const signToken = async (id: string, email: string) => {
 
 export const verifyToken = async (token: string) => {
   try {
-    let payload = verify(token, secret);
+    type payload = {
+      sub: string;
+      email: string;
+    };
+    let payload = verify(token, secret) as payload;
     return payload;
   } catch (error: any) {
     throw new JsonWebTokenError(error);
@@ -33,7 +37,7 @@ export const signRefreshToken = async (id: string, email: string) => {
     };
     let token = sign(payload, secret, {
       expiresIn: "7d",
-    });
+    }) as string;
     return token;
   } catch (error: any) {
     throw new JsonWebTokenError(error);

@@ -1,8 +1,14 @@
 import { JsonWebTokenError } from "jsonwebtoken";
 import { ForbiddenRequestError, UnauthorizedRequestError } from "../errors";
 import { verifyToken } from "../utils";
+import { NextFunction, Response } from "express";
+import { ProtectedRequest } from "./interface.auth";
 
-export const authMiddleware = (async (req, res, next) => {
+export const authMiddleware = async (
+  req: ProtectedRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const [scheme, token] = req.headers.authorization.split(" ");
     if (scheme == "Bearer") {
@@ -12,10 +18,10 @@ export const authMiddleware = (async (req, res, next) => {
         );
       } else {
         try {
-          let id = await verifyToken(token);
-          req.userId = id;
+          let payload:any = await verifyToken(token);
+          req.user = payload;
           next();
-        } catch (error:any) {
+        } catch (error: any) {
           throw new JsonWebTokenError("Could not verify token", error);
         }
       }
@@ -27,4 +33,4 @@ export const authMiddleware = (async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-});
+};

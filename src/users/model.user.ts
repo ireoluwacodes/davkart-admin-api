@@ -3,24 +3,33 @@ import { IUser } from "./interface.user";
 
 // Declare the Schema of the Mongo model
 const userSchema = new Schema<IUser>({
-    fullName:{
-        type:String,
-        required:true,
-    },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-    },
-    hash:{
-        type:String,
-        required:true,
-    },
-    role:{
-        type:String,
-        required:true,
-    },
+  fullName: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  hash: {
+    type: String,
+    required: true,
+  },
+  accessToken: {
+    type: String,
+    required: true,
+  },
+  refreshValidTill: {
+    type: Date,
+    required: true,
+  },
+  role: {
+    type: String,
+    enum: ["admin", "blogger"],
+    required: true,
+  },
 });
 
 //Export the model
-export const User = model('User', userSchema);
+export const User = model("User", userSchema);
