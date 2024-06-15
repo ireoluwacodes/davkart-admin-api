@@ -2,7 +2,7 @@ import { Request } from "express";
 
 export interface ProtectedRequest extends Request {
   data?: any;
-  user: {
+  user?: {
     sub: string;
     email: string;
   };

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthService } from "./service.auth";
 import { ProtectedRequest } from "./interface.auth";
-import { CREATED } from "http-status";
+import { CREATED, OK } from "http-status";
 
 export class AuthController {
   private authService: AuthService;
@@ -28,22 +28,44 @@ export class AuthController {
   }
 
   public async login(
-    req: Request,
+    req: ProtectedRequest,
     res: Response,
     next: NextFunction
   ): Promise<Response | void> {
     try {
+      const { email, password } = req.body;
+
+      const user = await this.authService.login(email, password)
+
+      const data = {
+        statusCode: OK,
+        user,
+        message: "Login Successfully",
+      };
+      req.data = data;
+      next();
     } catch (error: any) {
       next(error);
     }
   }
 
   public async refresh(
-    req: Request,
+    req: ProtectedRequest,
     res: Response,
     next: NextFunction
   ): Promise<Response | void> {
     try {
+      const {token} = req.params
+
+      const user = await this.authService.refresh(token);
+
+      const data = {
+        statusCode: OK,
+        user,
+        message: "success",
+      };
+      req.data = data;
+      next();
     } catch (error: any) {
       next(error);
     }
@@ -55,6 +77,14 @@ export class AuthController {
     next: NextFunction
   ): Promise<Response | void> {
     try {
+      const id = req.user.sub
+      await this.authService.logout(id)
+      const data = {
+        statusCode: OK,
+        message: "success",
+      };
+      req.data = data;
+      next();
     } catch (error: any) {
       next(error);
     }

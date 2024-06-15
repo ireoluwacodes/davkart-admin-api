@@ -1,4 +1,9 @@
-import { comparePassword, hashPassword, signToken } from "../utils";
+import {
+  comparePassword,
+  hashPassword,
+  signToken,
+  verifyToken,
+} from "../utils";
 import { ForbiddenRequestError } from "../errors";
 import { IUser, User } from "../users";
 
@@ -14,7 +19,7 @@ export class AuthService {
     if (users.length >= 1) {
       throw new ForbiddenRequestError("admin user already exists");
     }
-    const hash = await hashPassword(password) as string;
+    const hash = (await hashPassword(password)) as string;
     const user = await this.userModel.create({
       fullName,
       email,
@@ -29,7 +34,7 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenRequestError("invalid email or password");
     }
-    const isMatch = await comparePassword(user.hash, password) as boolean;
+    const isMatch = (await comparePassword(user.hash, password)) as boolean;
     if (!isMatch) {
       throw new ForbiddenRequestError("invalid email or password");
     }
@@ -49,7 +54,44 @@ export class AuthService {
     };
   }
 
-  public async refresh(token: string) {}
+  public async refresh(token: string) {
+    const user = await this.userModel.findOne({ accessToken: token }).lean();
+    if (!user) {
+      throw new ForbiddenRequestError("invalid token");
+    }
+    if(new Date(user.refreshValidTill).getTime() < Date.now()){
+      throw new ForbiddenRequestError("refresh token is EXPIRED")
+    }
+    try {
+      const payload = await verifyToken(token);
 
-  public async logout(id: string) {}
+      return {
+        ...user,
+        accessToken: undefined,
+        hash: undefined,
+        refreshValidTill: undefined,
+        token,
+      };
+    } catch (error) {
+      const token = (await signToken(user._id, user.email)) as string;
+
+      await this.userModel.findByIdAndUpdate(user._id, {
+        accessToken: token,
+      });
+      return {
+        ...user,
+        accessToken: undefined,
+        hash: undefined,
+        refreshValidTill: undefined,
+        token,
+      };
+    }
+  }
+
+  public async logout(id: string) {
+    await this.userModel.findByIdAndUpdate(id, {
+      accessToken: " ",
+      refreshValidTill: 0,
+    });
+  }
 }

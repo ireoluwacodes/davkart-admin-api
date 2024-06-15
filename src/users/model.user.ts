@@ -18,15 +18,14 @@ const userSchema = new Schema<IUser>({
   },
   accessToken: {
     type: String,
-    required: true,
   },
   refreshValidTill: {
     type: Date,
-    required: true,
   },
   role: {
     type: String,
     enum: ["admin", "blogger"],
+    default : "blogger",
     required: true,
   },
 });
