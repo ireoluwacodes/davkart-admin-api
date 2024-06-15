@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { AuthService } from "./service.auth";
 import { ProtectedRequest } from "./interface.auth";
 import { CREATED, OK } from "http-status";
+import { validateDbId } from "../utils";
 
 export class AuthController {
   private authService: AuthService;
@@ -78,6 +79,7 @@ export class AuthController {
   ): Promise<Response | void> {
     try {
       const id = req.user.sub
+      await validateDbId(id)
       await this.authService.logout(id)
       const data = {
         statusCode: OK,
