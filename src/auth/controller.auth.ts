@@ -18,7 +18,7 @@ export class AuthController {
       const user = await this.authService.register(email, password, fullName);
       const data = {
         statusCode: CREATED,
-        user,
+        data: user,
         message: "User Created Successfully",
       };
       req.data = data;
@@ -36,11 +36,11 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      const user = await this.authService.login(email, password)
+      const user = await this.authService.login(email, password);
 
       const data = {
         statusCode: OK,
-        user,
+        data: user,
         message: "Login Successfully",
       };
       req.data = data;
@@ -56,13 +56,13 @@ export class AuthController {
     next: NextFunction
   ): Promise<Response | void> {
     try {
-      const {token} = req.params
+      const { token } = req.params;
 
       const user = await this.authService.refresh(token);
 
       const data = {
         statusCode: OK,
-        user,
+        data: user,
         message: "success",
       };
       req.data = data;
@@ -78,9 +78,9 @@ export class AuthController {
     next: NextFunction
   ): Promise<Response | void> {
     try {
-      const id = req.user.sub
-      await validateDbId(id)
-      await this.authService.logout(id)
+      const id = req.user.sub;
+      await validateDbId(id);
+      await this.authService.logout(id);
       const data = {
         statusCode: OK,
         message: "success",

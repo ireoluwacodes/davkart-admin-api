@@ -7,6 +7,7 @@ import { UserRouter } from "../users";
 import { BlogRouter } from "../blogs";
 import { CategoryRouter } from "../category";
 import { errHandler, notFound } from "../errors";
+import { appRouter } from "../app.route";
 
 export const app: Application = express();
 
@@ -17,11 +18,12 @@ app.use(cors());
 app.use(morgan("dev"));
 
 // route init
-app.use("/api/v1/auth", AuthRouter)
-app.use("/api/v1/user", UserRouter)
-app.use("/api/v1/blog", BlogRouter)
-app.use("/api/v1/category", CategoryRouter)
+app.use(appRouter);
+app.use("/api/v1/auth", AuthRouter);
+app.use("/api/v1/user", UserRouter);
+app.use("/api/v1/blog", BlogRouter);
+app.use("/api/v1/category", CategoryRouter);
 
 // err handling
-app.use(notFound)
-app.use(errHandler)
+app.use(notFound);
+app.use(errHandler);
