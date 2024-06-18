@@ -13,9 +13,9 @@ export class AuthController {
     next: NextFunction
   ): Promise<Response | void> {
     try {
-      const { email, password, fullName } = req.body;
+      const { email, password, fullName, gender } = req.body;
 
-      const user = await this.authService.register(email, password, fullName);
+      const user = await this.authService.register(email, password, fullName, gender);
       const data = {
         statusCode: CREATED,
         data: user,

@@ -19,13 +19,19 @@ const userSchema = new Schema<IUser>({
   accessToken: {
     type: String,
   },
+  avatar: {
+    type: String,
+  },
+  gender: {
+    type: String,
+  },
   refreshValidTill: {
     type: Date,
   },
   role: {
     type: String,
-    enum: ["admin", "blogger"],
-    default : "blogger",
+    enum: ["admin", "author"],
+    default : "author",
     required: true,
   },
 });

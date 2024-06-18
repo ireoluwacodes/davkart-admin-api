@@ -13,7 +13,8 @@ export class AuthService {
   public async register(
     fullName: string,
     email: string,
-    password: string
+    password: string,
+    gender: string
   ): Promise<IUser> {
     const users = await this.userModel.find({ email, role: "admin" }).lean();
     if (users.length >= 1) {
@@ -23,6 +24,7 @@ export class AuthService {
     const user = await this.userModel.create({
       fullName,
       email,
+      gender,
       role: "admin",
       hash,
     });
