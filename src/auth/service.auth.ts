@@ -16,7 +16,7 @@ export class AuthService {
     password: string,
     gender: string
   ): Promise<IUser> {
-    const users = await this.userModel.find({ email, role: "admin" }).lean();
+    const users = await this.userModel.find({ role: "admin" }).lean();
     if (users.length >= 1) {
       throw new ForbiddenRequestError("admin user already exists");
     }
@@ -61,8 +61,8 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenRequestError("invalid token");
     }
-    if(new Date(user.refreshValidTill).getTime() < Date.now()){
-      throw new ForbiddenRequestError("refresh token is EXPIRED")
+    if (new Date(user.refreshValidTill).getTime() < Date.now()) {
+      throw new ForbiddenRequestError("refresh token is EXPIRED");
     }
     try {
       const payload = await verifyToken(token);
