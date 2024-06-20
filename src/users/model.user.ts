@@ -24,6 +24,8 @@ const userSchema = new Schema<IUser>({
   },
   gender: {
     type: String,
+    enum: ["M", "F"],
+
   },
   refreshValidTill: {
     type: Date,
