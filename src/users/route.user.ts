@@ -14,7 +14,7 @@ UserRouter.route("/create").post(
   userController.createUser
 );
 
-UserRouter.route("/update").post(
+UserRouter.route("/update").patch(
   validator(updateUserSchema),
   authMiddleware,
   userController.updateUser
