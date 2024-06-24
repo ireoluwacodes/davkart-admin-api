@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { UserController } from "./controller.user";
-import { authMiddleware } from "../auth";
 import { uploadPhoto, validator } from "../middlewares";
 import { createUserSchema, updateUserSchema } from "./validator.user";
-
-export const UserRouter = Router();
+import { authMiddleware } from "../auth/middleware.auth";
 
 const userController = new UserController();
+
+export const UserRouter = Router();
 
 UserRouter.route("/create").post(
   validator(createUserSchema),
@@ -20,7 +20,11 @@ UserRouter.route("/update").patch(
   userController.updateUser
 );
 
-UserRouter.route("/upload").post(authMiddleware, uploadPhoto.array("images", 1), userController.uploadImage);
+UserRouter.route("/upload").post(
+  authMiddleware,
+  uploadPhoto.array("images", 1),
+  userController.uploadImage
+);
 
 UserRouter.route("/delete/:id").delete(
   authMiddleware,

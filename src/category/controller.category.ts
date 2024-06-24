@@ -4,9 +4,8 @@ import { ProtectedRequest } from "../auth";
 import { CREATED, OK } from "http-status";
 import { validateDbId } from "../utils";
 
+const categoryService = new CategoryService()
 export class CategoryController {
-  private categoryService: CategoryService;
-
   public async createNewCategory(
     req: ProtectedRequest,
     res: Response,
@@ -15,7 +14,7 @@ export class CategoryController {
     try {
       const { name, description } = req.body;
 
-      const category = await this.categoryService.create(name, description);
+      const category = await categoryService.create(name, description);
 
       const data = {
         statusCode: CREATED,
@@ -36,7 +35,7 @@ export class CategoryController {
     next: NextFunction
   ) {
     try {
-      const categories = await this.categoryService.findAll();
+      const categories = await categoryService.findAll();
 
       const data = {
         statusCode: OK,
@@ -59,7 +58,7 @@ export class CategoryController {
       const { id } = req.params;
       await validateDbId(id)
 
-      await this.categoryService.delete(id);
+      await categoryService.delete(id);
 
       const data = {
         statusCode: OK,

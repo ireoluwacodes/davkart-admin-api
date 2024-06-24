@@ -5,9 +5,8 @@ import { CREATED, OK } from "http-status";
 import { BadRequestError } from "../errors";
 import { validateDbId } from "../utils";
 
+const userService = new UserService();
 export class UserController {
-  private userService: UserService;
-
   /**
    * Creates a new user in the system.
    *
@@ -24,7 +23,7 @@ export class UserController {
   ): Promise<void> {
     try {
       const { fullName, email, gender, password, role, avatar } = req.body;
-      const user = await this.userService.create(
+      const user = await userService.create(
         fullName,
         email,
         gender,
@@ -53,7 +52,7 @@ export class UserController {
   ): Promise<void> {
     try {
       const { fullName, email, gender, role, avatar } = req.body;
-      const user = await this.userService.update(
+      const user = await userService.update(
         fullName,
         email,
         gender,
@@ -81,7 +80,7 @@ export class UserController {
       if (files.length < 1) {
         throw new BadRequestError("File not found : Error uploading");
       }
-      const urls = await this.userService.upload(files);
+      const urls = await userService.upload(files);
       req.data = {
         statusCode: OK,
         message: "Image uploaded Successfully",
@@ -111,7 +110,7 @@ export class UserController {
     try {
       const { id } = req.params;
       await validateDbId(id);
-      await this.userService.delete(id);
+      await userService.delete(id);
       req.data = {
         statusCode: OK,
         message: "User Deleted Successfully",
@@ -127,7 +126,7 @@ export class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const users = await this.userService.getAll();
+      const users = await userService.getAll();
       req.data = {
         statusCode: OK,
         message: "All Users",

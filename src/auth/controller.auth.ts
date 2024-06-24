@@ -4,9 +4,9 @@ import { ProtectedRequest } from "./interface.auth";
 import { CREATED, OK } from "http-status";
 import { validateDbId } from "../utils";
 
-export class AuthController {
-  private authService: AuthService;
+const authService = new AuthService();
 
+export class AuthController {
   public async register(
     req: ProtectedRequest,
     res: Response,
@@ -15,7 +15,12 @@ export class AuthController {
     try {
       const { email, password, fullName, gender } = req.body;
 
-      const user = await this.authService.register(email, password, fullName, gender);
+      const user = await authService.register(
+        email,
+        password,
+        fullName,
+        gender
+      );
       const data = {
         statusCode: CREATED,
         data: user,
@@ -36,7 +41,7 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      const user = await this.authService.login(email, password);
+      const user = await authService.login(email, password);
 
       const data = {
         statusCode: OK,
@@ -58,7 +63,7 @@ export class AuthController {
     try {
       const { token } = req.params;
 
-      const user = await this.authService.refresh(token);
+      const user = await authService.refresh(token);
 
       const data = {
         statusCode: OK,
@@ -80,7 +85,7 @@ export class AuthController {
     try {
       const id = req.user.sub;
       await validateDbId(id);
-      await this.authService.logout(id);
+      await authService.logout(id);
       const data = {
         statusCode: OK,
         message: "success",
