@@ -30,6 +30,12 @@ const userSchema = new Schema<IUser>({
   refreshValidTill: {
     type: Date,
   },
+  otp : {
+    type: String,
+  },
+  otpExpiresIn : {
+    type: Date,
+  },
   role: {
     type: String,
     enum: ["admin", "author"],

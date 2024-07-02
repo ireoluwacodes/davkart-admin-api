@@ -96,4 +96,70 @@ export class AuthController {
       next(error);
     }
   }
+  public async forgotPassword(
+    req: ProtectedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const {email} = req.body;
+
+      await authService.forgotAuth(email);
+
+      const data = {
+        statusCode: OK,
+        message: "success",
+      };
+      req.data = data;
+      next();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+  public async confirmOtp(
+    req: ProtectedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const {email, otp} = req.body;
+
+      const user = await authService.confirmOtp(otp, email);
+
+      const data = {
+        statusCode: OK,
+        message: "success",
+        data: user,
+      };
+      req.data = data;
+      next();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+  public async resetPassword(
+    req: ProtectedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<Response | void> {
+    try {
+      const id = req.user.sub;
+      await validateDbId(id);
+
+      const {password} = req.body;
+
+      await authService.resetPass(id, password);
+
+      const data = {
+        statusCode: OK,
+        message: "success",
+      };
+      
+      req.data = data;
+      next();
+    } catch (error: any) {
+      next(error);
+    }
+  }
+
 }

@@ -22,6 +22,20 @@ AuthRouter.route("/login").post(
 
 AuthRouter.route("/refresh/:token").get(authController.refresh, successHandler);
 
+AuthRouter.route("/forgot-pass").post(authController.forgotPassword, successHandler);
+
+AuthRouter.route("/confirm-otp").post(
+  authMiddleware,
+  authController.confirmOtp,
+  successHandler
+);
+
+AuthRouter.route("/reset-pass").post(
+  authMiddleware,
+  authController.resetPassword,
+  successHandler
+);
+
 AuthRouter.route("/logout").get(
   authMiddleware,
   authController.logout,

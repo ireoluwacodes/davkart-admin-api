@@ -6,6 +6,9 @@ import {
 } from "../utils";
 import { ForbiddenRequestError } from "../errors";
 import { IUser, User } from "../users";
+import { generateOtp } from "./../utils/otp.utils";
+import axios from "axios";
+import { mailService } from "../config";
 
 export class AuthService {
   private userModel = User;
@@ -96,4 +99,58 @@ export class AuthService {
       refreshValidTill: 0,
     });
   }
+
+  public async forgotAuth(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new ForbiddenRequestError("User not found");
+    }
+    const otp = generateOtp() as number;
+
+    const otpExpiresIn = Date.now() + 10 * 60 * 1000;
+
+    const requestData = JSON.stringify({
+      email,
+      otp,
+    });
+
+    await axios.post(`${mailService}/send-otp`, requestData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    await this.userModel.findByIdAndUpdate(user._id, {
+      otp,
+      otpExpiresIn,
+    });
+  }
+
+  public async confirmOtp(
+    otp: string,
+    email: string
+  ): Promise<{ token: string }> {
+    const user = await this.userModel.findOne({
+      email,
+      otp,
+    });
+
+    if (!user || new Date(user.otpExpiresIn).getTime() < Date.now()) {
+      throw new ForbiddenRequestError("Invalid OTP or Email");
+    }
+
+    const token = (await signToken(user._id, user.email)) as string;
+
+    return {
+      token,
+    };
+  }
+
+  public async resetPass(id: string, password: string) {
+    const user = await this.userModel.findByIdAndUpdate(id, {
+      hash: (await hashPassword(password)) as string,
+    });
+  }
+
+  public async changePass(email: string) {}
 }
