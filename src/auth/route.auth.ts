@@ -1,7 +1,13 @@
 import { Router } from "express";
 import { AuthController } from "./controller.auth";
 import { successHandler, validator } from "../middlewares";
-import { createUserSchema, loginSchema } from "./validator.auth";
+import {
+  createUserSchema,
+  forgotSchema,
+  loginSchema,
+  otpSchema,
+  passwordSchema,
+} from "./validator.auth";
 import { authMiddleware } from "./middleware.auth";
 
 const authController = new AuthController();
@@ -22,15 +28,21 @@ AuthRouter.route("/login").post(
 
 AuthRouter.route("/refresh/:token").get(authController.refresh, successHandler);
 
-AuthRouter.route("/forgot-pass").post(authController.forgotPassword, successHandler);
+AuthRouter.route("/forgot-pass").post(
+  validator(forgotSchema),
+  authController.forgotPassword,
+  successHandler
+);
 
 AuthRouter.route("/confirm-otp").post(
+  validator(otpSchema),
   authMiddleware,
   authController.confirmOtp,
   successHandler
 );
 
 AuthRouter.route("/reset-pass").post(
+  validator(passwordSchema),
   authMiddleware,
   authController.resetPassword,
   successHandler
