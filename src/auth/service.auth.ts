@@ -111,6 +111,7 @@ export class AuthService {
 
     const requestData = JSON.stringify({
       email,
+      name : user.fullName,
       otp,
     });
 

@@ -92,16 +92,6 @@ export class UserController {
     }
   }
 
-  public async sendContactUsMail(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-    } catch (error) {
-      next(error);
-    }
-  }
   public async deleteUser(
     req: ProtectedRequest,
     res: Response,

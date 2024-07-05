@@ -52,8 +52,6 @@ export class UserService {
     return user;
   }
 
-  public async sendMail() {}
-
   public async upload(files: Express.Multer.File[]): Promise<string[]> {
     const uploader = (path: string) => cloudinaryUpload(path);
     let urls: string[];

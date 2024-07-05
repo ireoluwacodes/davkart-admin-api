@@ -16,9 +16,9 @@ export class AuthController {
       const { email, password, fullName, gender } = req.body;
 
       const user = await authService.register(
+        fullName,
         email,
         password,
-        fullName,
         gender
       );
       const data = {

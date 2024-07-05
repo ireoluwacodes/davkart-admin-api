@@ -32,5 +32,3 @@ UserRouter.route("/delete/:id").delete(
 );
 
 UserRouter.route("/").get(authMiddleware, userController.getAllUsers);
-
-UserRouter.route("/contact").post(userController.sendContactUsMail);

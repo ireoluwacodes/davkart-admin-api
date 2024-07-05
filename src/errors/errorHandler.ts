@@ -8,6 +8,7 @@ import {
   UnauthorizedRequestError,
 } from "./exceptions";
 import { NextFunction, Request, Response } from "express";
+import { AxiosError } from "axios";
 
 export const errHandler = (
   error: any,
@@ -16,8 +17,8 @@ export const errHandler = (
   next: NextFunction
 ): Response<any> => {
   let statuscode: number = res.statusCode == 200 ? 500 : res.statusCode;
-  let message: string = "A server error occurred";
-  let type: string = "Server Error";
+  let message: any = "A server error occurred";
+  let type: string = "Admin Server Error";
   if (error instanceof Error) {
     message = error.message;
   }
@@ -25,6 +26,14 @@ export const errHandler = (
     statuscode = UNAUTHORIZED;
     message = error.message;
     type = "JWT Error or JWT Expired error";
+  }
+  if (error instanceof AxiosError) {
+    statuscode = error.response?.status || 500;
+    message = {
+      1 : error.message,
+      2 : error.response?.data
+    } || "A network error occurred";
+    type = "Axios Error";
   }
   if (error instanceof MongooseError) {
     message = error.message;
