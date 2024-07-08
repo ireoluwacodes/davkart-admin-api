@@ -10,6 +10,10 @@ export const authMiddleware = async (
   next: NextFunction
 ) => {
   try {
+    if (!req.headers.authorization)
+      throw new ForbiddenRequestError(
+        "Invalid token, pass token as a Bearer in authorization headers"
+      );
     const [scheme, token] = req.headers.authorization.split(" ");
     if (scheme == "Bearer") {
       if (!token || token == "") {
@@ -18,7 +22,7 @@ export const authMiddleware = async (
         );
       } else {
         try {
-          let payload:any = await verifyToken(token);
+          let payload: any = await verifyToken(token);
           req.user = payload;
           next();
         } catch (error: any) {
