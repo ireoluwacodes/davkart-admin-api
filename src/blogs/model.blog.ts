@@ -14,7 +14,6 @@ const blogSchema = new Schema<IBlog>({
   body: {
     type: String,
     required: true,
-    unique: true,
   },
   category: {
     type: Schema.Types.ObjectId,
@@ -23,6 +22,11 @@ const blogSchema = new Schema<IBlog>({
   coverPhoto: {
     type: String,
     required: true,
+  },
+  status : {
+    type: String,
+    required: true,
+    enum : ["pending", "active", "deleted"]
   },
   author: {
     type: Schema.Types.ObjectId,

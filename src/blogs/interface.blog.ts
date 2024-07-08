@@ -4,6 +4,7 @@ export interface IBlog {
   body?: string;
   category?: ObjectId;
   title?: string;
+  status?: string;
   releaseDate?: Date;
   author?: ObjectId;
   coverPhoto?: string;
