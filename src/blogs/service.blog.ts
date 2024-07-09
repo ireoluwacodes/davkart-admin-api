@@ -75,7 +75,9 @@ export class BlogService {
       throw new ForbiddenRequestError(
         "Only admin user can request other blogs apart from self"
       );
-    const blogs = await this.blogModel.find({ author: authorId }).lean();
+    const blogs = await this.blogModel
+      .find({ author: authorId, status: "active" })
+      .lean();
     return blogs;
   }
 
