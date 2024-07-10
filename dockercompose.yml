@@ -24,8 +24,17 @@ services:
     networks:
       - database-network
     environment:
-      - LOCAL_MONGO_URL=mongodb://root:rootpassword@mongo_db:27017
+      - LOCAL_MONGO_URL= ${ROOT_MONGO_URL}
+      - MONGO_URL= ${MONGO_URL}
+      - NODE_ENV= ${NODE_ENV}
+      - PORT= ${PORT}
+      - JWT_SECRET= ${JWT_SECRET}
+      - CLOUDINARY_CLOUD_NAME= ${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY= ${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET= ${CLOUDINARY_API_SECRET}
+      - MAIL_SERVICE_URL= ${MAIL_SERVICE_URL}
 
 networks:
   database-network:
     name: database-network
+    driver: bridge
