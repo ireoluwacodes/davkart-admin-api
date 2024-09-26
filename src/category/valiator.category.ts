@@ -1,4 +1,4 @@
-import Joi, { ObjectSchema } from "joi";
+import Joi, { ObjectSchema } from 'joi';
 
 export const createCategorySchema: ObjectSchema = Joi.object({
   name: Joi.string().required(),

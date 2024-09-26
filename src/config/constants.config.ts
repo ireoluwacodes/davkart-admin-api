@@ -1,8 +1,8 @@
-import { config } from "dotenv";
+import { config } from 'dotenv';
 
 config();
 
-export const PORT = process.env.PORT || "3000";
+export const PORT = process.env.PORT || '3000';
 export const secret = process.env.JWT_SECRET;
 export const localMUrl = process.env.LOCAL_MONGO_URL;
 export const webMUrl = process.env.MONGO_URL;
@@ -13,5 +13,5 @@ export const cloudinaryName = process.env.CLOUDINARY_CLOUD_NAME;
 export const googleClientId = process.env.GOOGLE_CLIENT_ID;
 export const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 export const googleClientRedirect = process.env.CLIENT_REDIRECT;
-export const sessionSecret = process.env.SESSION_SECRET
-export const mailService = process.env.MAIL_SERVICE_URL
+export const sessionSecret = process.env.SESSION_SECRET;
+export const mailService = process.env.MAIL_SERVICE_URL;

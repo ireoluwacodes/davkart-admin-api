@@ -1,15 +1,15 @@
-import { NextFunction, Request, Response } from "express";
-import { CategoryService } from "./service.category";
-import { ProtectedRequest } from "../auth";
-import { CREATED, OK } from "http-status";
-import { validateDbId } from "../utils";
+import { NextFunction, Response } from 'express';
+import { CategoryService } from './service.category';
+import { ProtectedRequest } from '../auth';
+import { CREATED, OK } from 'http-status';
+import { validateDbId } from '../utils';
 
-const categoryService = new CategoryService()
+const categoryService = new CategoryService();
 export class CategoryController {
   public async createNewCategory(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { name, description } = req.body;
@@ -19,7 +19,7 @@ export class CategoryController {
       const data = {
         statusCode: CREATED,
         data: category,
-        message: "Category created successfully",
+        message: 'Category created successfully',
       };
 
       req.data = data;
@@ -32,7 +32,7 @@ export class CategoryController {
   public async readAllCategories(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const categories = await categoryService.findAll();
@@ -40,7 +40,7 @@ export class CategoryController {
       const data = {
         statusCode: OK,
         data: categories,
-        message: "success",
+        message: 'success',
       };
 
       req.data = data;
@@ -52,17 +52,17 @@ export class CategoryController {
   public async deleteExistingCategory(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { id } = req.params;
-      await validateDbId(id)
+      await validateDbId(id);
 
       await categoryService.delete(id);
 
       const data = {
         statusCode: OK,
-        message: "successfully deleted",
+        message: 'successfully deleted',
       };
 
       req.data = data;

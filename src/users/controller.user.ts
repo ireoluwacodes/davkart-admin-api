@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { ProtectedRequest } from "../auth";
-import { UserService } from "./service.user";
-import { CREATED, OK } from "http-status";
-import { BadRequestError } from "../errors";
-import { validateDbId } from "../utils";
+import { NextFunction, Response } from 'express';
+import { ProtectedRequest } from '../auth';
+import { UserService } from './service.user';
+import { CREATED, OK } from 'http-status';
+import { BadRequestError } from '../errors';
+import { validateDbId } from '../utils';
 
 const userService = new UserService();
 export class UserController {
@@ -19,7 +19,7 @@ export class UserController {
   public async createUser(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { fullName, email, gender, password, role, avatar } = req.body;
@@ -29,11 +29,11 @@ export class UserController {
         gender,
         password,
         role,
-        avatar
+        avatar,
       );
       req.data = {
         statusCode: CREATED,
-        message: "User Created Successfully",
+        message: 'User Created Successfully',
         data: user,
       };
       next();
@@ -48,20 +48,22 @@ export class UserController {
   public async updateUser(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
+      const id = req.user?.sub;
       const { fullName, email, gender, role, avatar } = req.body;
       const user = await userService.update(
+        id,
         fullName,
         email,
         gender,
         role,
-        avatar
+        avatar,
       );
       req.data = {
         statusCode: OK,
-        message: "User updated Successfully",
+        message: 'User updated Successfully',
         data: user,
       };
       next();
@@ -73,17 +75,17 @@ export class UserController {
   public async uploadImage(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const files = req.files as Express.Multer.File[];
       if (files.length < 1) {
-        throw new BadRequestError("File not found : Error uploading");
+        throw new BadRequestError('File not found : Error uploading');
       }
       const urls = await userService.upload(files);
       req.data = {
         statusCode: OK,
-        message: "Image uploaded Successfully",
+        message: 'Image uploaded Successfully',
         data: urls,
       };
       next();
@@ -95,7 +97,7 @@ export class UserController {
   public async deleteUser(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const { id } = req.params;
@@ -103,7 +105,7 @@ export class UserController {
       await userService.delete(id);
       req.data = {
         statusCode: OK,
-        message: "User Deleted Successfully",
+        message: 'User Deleted Successfully',
       };
       next();
     } catch (error) {
@@ -113,13 +115,13 @@ export class UserController {
   public async getAllUsers(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<void> {
     try {
       const users = await userService.getAll();
       req.data = {
         statusCode: OK,
-        message: "All Users",
+        message: 'All Users',
         data: users,
       };
       next();

@@ -1,10 +1,10 @@
-import { NextFunction, Response } from "express";
-import { ProtectedRequest } from "../auth";
+import { NextFunction, Response } from 'express';
+import { ProtectedRequest } from '../auth';
 
 export const successHandler = (
   req: ProtectedRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const data = req.data;

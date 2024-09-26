@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-import { ICategory } from "./interface.category";
+import { model, Schema } from 'mongoose';
+import { ICategory } from './interface.category';
 
 // Declare the Schema of the Mongo model
 const categorySchema = new Schema<ICategory>({
@@ -15,4 +15,4 @@ const categorySchema = new Schema<ICategory>({
 });
 
 //Export the model
-export const Category = model("Category", categorySchema);
+export const Category = model('Category', categorySchema);

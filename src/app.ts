@@ -1,4 +1,4 @@
-import { app, ConnectDb, PORT } from "./config";
+import { app, ConnectDb, PORT } from './config';
 
 const startApp = async () => {
   await ConnectDb();

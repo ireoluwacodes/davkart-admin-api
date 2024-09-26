@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-import { IUser } from "./interface.user";
+import { model, Schema } from 'mongoose';
+import { IUser } from './interface.user';
 
 // Declare the Schema of the Mongo model
 const userSchema = new Schema<IUser>({
@@ -24,25 +24,24 @@ const userSchema = new Schema<IUser>({
   },
   gender: {
     type: String,
-    enum: ["M", "F"],
-
+    enum: ['M', 'F'],
   },
   refreshValidTill: {
     type: Date,
   },
-  otp : {
+  otp: {
     type: String,
   },
-  otpExpiresIn : {
+  otpExpiresIn: {
     type: Date,
   },
   role: {
     type: String,
-    enum: ["admin", "author"],
-    default : "author",
+    enum: ['admin', 'author'],
+    default: 'author',
     required: true,
   },
 });
 
 //Export the model
-export const User = model("User", userSchema);
+export const User = model('User', userSchema);

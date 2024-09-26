@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose";
+import { ObjectId } from 'mongoose';
 
 export interface IBlog {
   body?: string;
@@ -12,12 +12,12 @@ export interface IBlog {
   _id?: string;
 }
 
-interface comment{
-    madeBy: String,
-    content: String,
-    date: Date,
+interface comment {
+  madeBy: string;
+  content: string;
+  date: Date;
 }
 
-interface comments extends comment{
-   replies : comment[]
+interface comments extends comment {
+  replies: comment[];
 }

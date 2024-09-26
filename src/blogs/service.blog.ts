@@ -1,8 +1,8 @@
-import { BadRequestError, ForbiddenRequestError } from "../errors";
-import { Category } from "../category";
-import { Blog } from "./model.blog";
-import { IBlog } from "./interface.blog";
-import { User } from "../users";
+import { BadRequestError, ForbiddenRequestError } from '../errors';
+import { Category } from '../category';
+import { Blog } from './model.blog';
+import { IBlog } from './interface.blog';
+import { User } from '../users';
 
 export class BlogService {
   private blogModel = Blog;
@@ -14,10 +14,10 @@ export class BlogService {
     body: string,
     category: string,
     cover: string,
-    authorId: string
+    authorId: string,
   ): Promise<IBlog> {
     const findCategory = await this.categoryModel.findById(category);
-    if (!findCategory) throw new BadRequestError("invalid category");
+    if (!findCategory) throw new BadRequestError('invalid category');
     const blog = await this.blogModel.create({
       title,
       body,
@@ -33,7 +33,7 @@ export class BlogService {
     blogId: string,
     title: string,
     body: string,
-    cover: string
+    cover: string,
   ): Promise<IBlog> {
     const blog = await this.blogModel
       .findByIdAndUpdate(
@@ -43,7 +43,7 @@ export class BlogService {
           body,
           coverPhoto: cover,
         },
-        { new: true }
+        { new: true },
       )
       .lean();
     return blog;
@@ -51,7 +51,7 @@ export class BlogService {
 
   public async delete(blogId: string) {
     await this.blogModel.findByIdAndUpdate(blogId, {
-      status: "deleted",
+      status: 'deleted',
     });
   }
 
@@ -65,21 +65,21 @@ export class BlogService {
   }
 
   public async getActive(): Promise<IBlog[]> {
-    const blogs = await this.blogModel.find({ status: "active" }).lean();
+    const blogs = await this.blogModel.find({ status: 'active' }).lean();
     return blogs;
   }
 
   public async getByAuthor(userId: string, authorId: string) {
     const user = await this.userModel.findById(userId);
-    if (user.role !== "admin" && userId !== authorId)
+    if (user.role !== 'admin' && userId !== authorId)
       throw new ForbiddenRequestError(
-        "Only admin user can request other blogs apart from self"
+        'Only admin user can request other blogs apart from self',
       );
     const blogs = await this.blogModel
-      .find({ author: authorId, status: "active" })
+      .find({ author: authorId, status: 'active' })
       .lean();
     return blogs;
   }
 
-  public async comment(blogId: string) {}
+  // public async comment(blogId: string) {}
 }

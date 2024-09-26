@@ -1,8 +1,8 @@
-import { NextFunction, Request, Response } from "express";
-import { AuthService } from "./service.auth";
-import { ProtectedRequest } from "./interface.auth";
-import { CREATED, OK } from "http-status";
-import { validateDbId } from "../utils";
+import { NextFunction, Response } from 'express';
+import { AuthService } from './service.auth';
+import { ProtectedRequest } from './interface.auth';
+import { CREATED, OK } from 'http-status';
+import { validateDbId } from '../utils';
 
 const authService = new AuthService();
 
@@ -10,7 +10,7 @@ export class AuthController {
   public async register(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
       const { email, password, fullName, gender } = req.body;
@@ -19,16 +19,16 @@ export class AuthController {
         fullName,
         email,
         password,
-        gender
+        gender,
       );
       const data = {
         statusCode: CREATED,
         data: user,
-        message: "User Created Successfully",
+        message: 'User Created Successfully',
       };
       req.data = data;
       next();
-    } catch (error: any) {
+    } catch (error) {
       next(error);
     }
   }
@@ -36,7 +36,7 @@ export class AuthController {
   public async login(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
       const { email, password } = req.body;
@@ -46,11 +46,11 @@ export class AuthController {
       const data = {
         statusCode: OK,
         data: user,
-        message: "Login Successfully",
+        message: 'Login Successfully',
       };
       req.data = data;
       next();
-    } catch (error: any) {
+    } catch (error) {
       next(error);
     }
   }
@@ -58,7 +58,7 @@ export class AuthController {
   public async refresh(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
       const { token } = req.params;
@@ -68,7 +68,7 @@ export class AuthController {
       const data = {
         statusCode: OK,
         data: user,
-        message: "success",
+        message: 'success',
       };
       req.data = data;
       next();
@@ -80,7 +80,7 @@ export class AuthController {
   public async logout(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
       const id = req.user.sub;
@@ -88,7 +88,7 @@ export class AuthController {
       await authService.logout(id);
       const data = {
         statusCode: OK,
-        message: "success",
+        message: 'success',
       };
       req.data = data;
       next();
@@ -99,16 +99,16 @@ export class AuthController {
   public async forgotPassword(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
-      const {email} = req.body;
+      const { email } = req.body;
 
       await authService.forgotAuth(email);
 
       const data = {
         statusCode: OK,
-        message: "success",
+        message: 'success',
       };
       req.data = data;
       next();
@@ -119,16 +119,16 @@ export class AuthController {
   public async confirmOtp(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
-      const {email, otp} = req.body;
+      const { email, otp } = req.body;
 
       const user = await authService.confirmOtp(otp, email);
 
       const data = {
         statusCode: OK,
-        message: "success",
+        message: 'success',
         data: user,
       };
       req.data = data;
@@ -140,26 +140,25 @@ export class AuthController {
   public async resetPassword(
     req: ProtectedRequest,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ): Promise<Response | void> {
     try {
       const id = req.user.sub;
       await validateDbId(id);
 
-      const {password} = req.body;
+      const { password } = req.body;
 
       await authService.resetPass(id, password);
 
       const data = {
         statusCode: OK,
-        message: "success",
+        message: 'success',
       };
-      
+
       req.data = data;
       next();
     } catch (error: any) {
       next(error);
     }
   }
-
 }

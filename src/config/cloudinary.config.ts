@@ -3,7 +3,7 @@ import {
   cloudinaryApiKey,
   cloudinaryApiSecret,
   cloudinaryName,
-} from "./constants.config";
+} from './constants.config';
 
 cloudinary.config({
   cloud_name: cloudinaryName,
@@ -11,17 +11,17 @@ cloudinary.config({
   api_secret: cloudinaryApiSecret,
 });
 
-export const cloudinaryUpload = async (path:string):Promise<any> => {
-  console.log("file uploading");
+export const cloudinaryUpload = async (path: string): Promise<any> => {
+  console.log('file uploading');
   return new Promise((resolve) => {
-    cloudinary.uploader.upload(path,   {
-        resource_type: "auto",
-      }).then(result => {
-        resolve(
-          {
-            url: result.secure_url,
-          },
-        );
+    cloudinary.uploader
+      .upload(path, {
+        resource_type: 'auto',
+      })
+      .then((result) => {
+        resolve({
+          url: result.secure_url,
+        });
       });
   });
 };

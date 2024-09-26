@@ -1,15 +1,32 @@
-import { Router } from "express";
-import { CategoryController } from "./controller.category";
-import { validator } from "../middlewares";
-import { createCategorySchema, updateCategorySchema } from "./valiator.category";
-import { authMiddleware } from "../auth";
+import { Router } from 'express';
+import { CategoryController } from './controller.category';
+import { successHandler, validator } from '../middlewares';
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from './valiator.category';
+import { authMiddleware } from '../auth';
 
-const categoryController = new CategoryController()
+const categoryController = new CategoryController();
 
-export const CategoryRouter = Router()
+export const CategoryRouter = Router();
 
-CategoryRouter.route("/category").post(validator(createCategorySchema), authMiddleware, categoryController.createNewCategory)
+CategoryRouter.route('/create').post(
+  validator(createCategorySchema),
+  authMiddleware,
+  categoryController.createNewCategory,
+  successHandler,
+);
 
-CategoryRouter.route("/category").get(validator(updateCategorySchema), authMiddleware, categoryController.readAllCategories)
+CategoryRouter.route('/').get(
+  validator(updateCategorySchema),
+  authMiddleware,
+  categoryController.readAllCategories,
+  successHandler,
+);
 
-CategoryRouter.route("/category/:id").delete(authMiddleware, categoryController.deleteExistingCategory)
+CategoryRouter.route('/delete/:id').delete(
+  authMiddleware,
+  categoryController.deleteExistingCategory,
+  successHandler,
+);

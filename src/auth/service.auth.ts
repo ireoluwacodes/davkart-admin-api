@@ -3,12 +3,12 @@ import {
   hashPassword,
   signToken,
   verifyToken,
-} from "../utils";
-import { ForbiddenRequestError } from "../errors";
-import { IUser, User } from "../users";
-import { generateOtp } from "./../utils/otp.utils";
-import axios from "axios";
-import { mailService } from "../config";
+} from '../utils';
+import { ForbiddenRequestError } from '../errors';
+import { IUser, User } from '../users';
+import { generateOtp } from './../utils/otp.utils';
+import axios from 'axios';
+import { mailService } from '../config';
 
 export class AuthService {
   private userModel = User;
@@ -17,31 +17,31 @@ export class AuthService {
     fullName: string,
     email: string,
     password: string,
-    gender: string
+    gender: string,
   ): Promise<IUser> {
-    const users = await this.userModel.find({ role: "admin" }).lean();
+    const users = await this.userModel.find({ role: 'admin' }).lean();
     if (users.length >= 1) {
-      throw new ForbiddenRequestError("admin user already exists");
+      throw new ForbiddenRequestError('admin user already exists');
     }
     const hash = (await hashPassword(password)) as string;
     const user = await this.userModel.create({
       fullName,
       email,
       gender,
-      role: "admin",
+      role: 'admin',
       hash,
     });
     return user;
   }
 
-  public async login(email: string, password: string): Promise<IUser | {}> {
+  public async login(email: string, password: string): Promise<IUser | object> {
     const user = await this.userModel.findOne({ email }).lean();
     if (!user) {
-      throw new ForbiddenRequestError("invalid email or password");
+      throw new ForbiddenRequestError('invalid email or password');
     }
     const isMatch = (await comparePassword(user.hash, password)) as boolean;
     if (!isMatch) {
-      throw new ForbiddenRequestError("invalid email or password");
+      throw new ForbiddenRequestError('invalid email or password');
     }
     const token = await signToken(user._id, user.email);
 
@@ -62,13 +62,13 @@ export class AuthService {
   public async refresh(token: string) {
     const user = await this.userModel.findOne({ accessToken: token }).lean();
     if (!user) {
-      throw new ForbiddenRequestError("invalid token");
+      throw new ForbiddenRequestError('invalid token');
     }
     if (new Date(user.refreshValidTill).getTime() < Date.now()) {
-      throw new ForbiddenRequestError("refresh token is EXPIRED");
+      throw new ForbiddenRequestError('refresh token is EXPIRED');
     }
     try {
-      const payload = await verifyToken(token);
+      await verifyToken(token);
 
       return {
         ...user,
@@ -78,6 +78,7 @@ export class AuthService {
         token,
       };
     } catch (error) {
+      console.log(error);
       const token = (await signToken(user._id, user.email)) as string;
 
       await this.userModel.findByIdAndUpdate(user._id, {
@@ -95,7 +96,7 @@ export class AuthService {
 
   public async logout(id: string) {
     await this.userModel.findByIdAndUpdate(id, {
-      accessToken: " ",
+      accessToken: ' ',
       refreshValidTill: 0,
     });
   }
@@ -103,7 +104,7 @@ export class AuthService {
   public async forgotAuth(email: string) {
     const user = await this.userModel.findOne({ email });
     if (!user) {
-      throw new ForbiddenRequestError("User not found");
+      throw new ForbiddenRequestError('User not found');
     }
     const otp = generateOtp() as number;
 
@@ -111,13 +112,13 @@ export class AuthService {
 
     const requestData = JSON.stringify({
       email,
-      name : user.fullName,
+      name: user.fullName,
       otp,
     });
 
     await axios.post(`${mailService}/send-otp`, requestData, {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
 
@@ -129,7 +130,7 @@ export class AuthService {
 
   public async confirmOtp(
     otp: string,
-    email: string
+    email: string,
   ): Promise<{ token: string }> {
     const user = await this.userModel.findOne({
       email,
@@ -137,7 +138,7 @@ export class AuthService {
     });
 
     if (!user || new Date(user.otpExpiresIn).getTime() < Date.now()) {
-      throw new ForbiddenRequestError("Invalid OTP or Email");
+      throw new ForbiddenRequestError('Invalid OTP or Email');
     }
 
     const token = (await signToken(user._id, user.email)) as string;
@@ -148,10 +149,10 @@ export class AuthService {
   }
 
   public async resetPass(id: string, password: string) {
-    const user = await this.userModel.findByIdAndUpdate(id, {
+    await this.userModel.findByIdAndUpdate(id, {
       hash: (await hashPassword(password)) as string,
     });
   }
 
-  public async changePass(email: string) {}
+  // public async changePass(email: string) {}
 }

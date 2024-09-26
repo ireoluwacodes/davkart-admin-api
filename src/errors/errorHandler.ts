@@ -1,58 +1,64 @@
-import { UNAUTHORIZED } from "http-status";
-import { JsonWebTokenError } from "jsonwebtoken";
-import { MongooseError } from "mongoose";
+import { UNAUTHORIZED } from 'http-status';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import { MongooseError } from 'mongoose';
+import { Request, Response, NextFunction } from 'express';
+import { AxiosError } from 'axios';
 import {
   BadRequestError,
   ForbiddenRequestError,
   ResourceNotFoundError,
   UnauthorizedRequestError,
-} from "./exceptions";
-import { NextFunction, Request, Response } from "express";
-import { AxiosError } from "axios";
+} from './exceptions';
 
 export const errHandler = (
-  error: any,
+  error: unknown,
   req: Request,
   res: Response,
-  next: NextFunction
-): Response<any> => {
-  let statuscode: number = res.statusCode == 200 ? 500 : res.statusCode;
-  let message: any = "A server error occurred";
-  let type: string = "Admin Server Error";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction, // Make sure you include next, even if unused, for proper error propagation
+): Response<unknown> => {
+  let statusCode: number = res.statusCode === 200 ? 500 : res.statusCode;
+  const message: { [key: number]: string } = { 1: 'A server error occurred' };
+  let type: string = 'Admin Server Error';
+
   if (error instanceof Error) {
-    message = error.message;
+    message[1] = error.message;
   }
+
   if (error instanceof JsonWebTokenError) {
-    statuscode = UNAUTHORIZED;
-    message = error.message;
-    type = "JWT Error or JWT Expired error";
+    statusCode = UNAUTHORIZED;
+    message[1] = error.message;
+    type = 'JWT Error or JWT Expired Error';
   }
+
   if (error instanceof AxiosError) {
-    statuscode = error.response?.status || 500;
-    message = {
-      1 : error.message,
-      2 : error.response?.data
-    } || "A network error occurred";
-    type = "Axios Error";
+    statusCode = error.response?.status || 500;
+    message[1] = error.message;
+    message[2] = JSON.stringify(error.response?.data) || 'No additional data';
+    type = 'Axios Error';
   }
+
   if (error instanceof MongooseError) {
-    message = error.message;
-    type = "Mongoose or MongoDB Error";
+    message[1] = error.message;
+    type = 'Mongoose or MongoDB Error';
   }
+
   if (
     error instanceof UnauthorizedRequestError ||
     error instanceof BadRequestError ||
     error instanceof ResourceNotFoundError ||
     error instanceof ForbiddenRequestError
   ) {
-    statuscode = error.statusCode;
-    message = error.message;
+    statusCode = error.statusCode;
+    message[1] = error.message;
     type = error.name;
   }
-  return res.status(statuscode).json({
-    status: "fail",
+
+  return res.status(statusCode).json({
+    status: 'fail',
     type,
     message,
-    // stack: error?.stack,
+    // Uncomment this for debugging in development, but hide in production
+    // stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
   });
 };

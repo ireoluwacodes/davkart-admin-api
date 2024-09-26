@@ -1,14 +1,14 @@
-import { JsonWebTokenError, sign, verify } from "jsonwebtoken";
-import { secret } from "../config";
+import { JsonWebTokenError, sign, verify } from 'jsonwebtoken';
+import { secret } from '../config';
 
 export const signToken = async (id: string, email: string) => {
   try {
-    let payload = {
+    const payload = {
       sub: id,
       email,
     };
-    let token = sign(payload, secret, {
-      expiresIn: "1h",
+    const token = sign(payload, secret, {
+      expiresIn: '1h',
     }) as string;
     return token;
   } catch (error: any) {
@@ -22,7 +22,7 @@ export const verifyToken = async (token: string) => {
       sub: string;
       email: string;
     };
-    let payload = verify(token, secret) as payload;
+    const payload = verify(token, secret) as payload;
     return payload;
   } catch (error: any) {
     throw new JsonWebTokenError(error);
@@ -31,12 +31,12 @@ export const verifyToken = async (token: string) => {
 
 export const signRefreshToken = async (id: string, email: string) => {
   try {
-    let payload = {
+    const payload = {
       sub: id,
       email,
     };
-    let token = sign(payload, secret, {
-      expiresIn: "7d",
+    const token = sign(payload, secret, {
+      expiresIn: '7d',
     }) as string;
     return token;
   } catch (error: any) {

@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from "express";
-import { BAD_REQUEST } from "http-status";
-import { ObjectSchema } from "joi";
+import { NextFunction, Request, Response } from 'express';
+import { BAD_REQUEST } from 'http-status';
+import { ObjectSchema } from 'joi';
 
 export const validator =
   (schema: ObjectSchema) =>

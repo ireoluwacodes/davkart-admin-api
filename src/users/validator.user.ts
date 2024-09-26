@@ -1,4 +1,4 @@
-import Joi, { ObjectSchema } from "joi";
+import Joi, { ObjectSchema } from 'joi';
 
 export const createUserSchema: ObjectSchema = Joi.object({
   fullName: Joi.string().required(),
@@ -6,16 +6,16 @@ export const createUserSchema: ObjectSchema = Joi.object({
   password: Joi.string().required(),
   avatar: Joi.string(),
   role: Joi.string()
-    .valid(...["admin", "author"])
+    .valid(...['admin', 'author'])
     .required(),
   gender: Joi.string().required(),
 });
 
 export const updateUserSchema: ObjectSchema = Joi.object({
   fullName: Joi.string(),
-  email: Joi.string(),
+  email: Joi.string().email(),
   password: Joi.string(),
-  role: Joi.string().valid(...["admin", "author"]),
+  role: Joi.string().valid('admin', 'author'),
   avatar: Joi.string(),
   gender: Joi.string(),
-});
+}).or('fullName', 'email', 'password', 'role', 'avatar', 'gender'); // Requires at least one field

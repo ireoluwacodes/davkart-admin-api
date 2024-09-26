@@ -1,5 +1,5 @@
-import { model, Schema } from "mongoose";
-import { IBlog } from "./interface.blog";
+import { model, Schema } from 'mongoose';
+import { IBlog } from './interface.blog';
 
 // Declare the Schema of the Mongo model
 const blogSchema = new Schema<IBlog>({
@@ -17,20 +17,21 @@ const blogSchema = new Schema<IBlog>({
   },
   category: {
     type: Schema.Types.ObjectId,
-    ref: "Category",
+    ref: 'Category',
   },
   coverPhoto: {
     type: String,
     required: true,
   },
-  status : {
+  status: {
     type: String,
     required: true,
-    enum : ["pending", "active", "deleted"]
+    default: 'active',
+    enum: ['pending', 'active', 'deleted'],
   },
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
   },
   comments: [
     {
@@ -49,4 +50,4 @@ const blogSchema = new Schema<IBlog>({
 });
 
 //Export the model
-export const Blog = model("Blog", blogSchema);
+export const Blog = model('Blog', blogSchema);
