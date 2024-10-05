@@ -42,11 +42,7 @@ BlogRouter.route('/').get(
   successHandler,
 );
 
-BlogRouter.route('/active').get(
-  authMiddleware,
-  blogController.getActiveBlogs,
-  successHandler,
-);
+BlogRouter.route('/active').get(blogController.getActiveBlogs, successHandler);
 
 BlogRouter.route('/author/:id').get(
   authMiddleware,

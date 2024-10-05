@@ -1,10 +1,7 @@
 import { Router } from 'express';
 import { CategoryController } from './controller.category';
 import { successHandler, validator } from '../middlewares';
-import {
-  createCategorySchema,
-  updateCategorySchema,
-} from './valiator.category';
+import { createCategorySchema } from './valiator.category';
 import { authMiddleware } from '../auth';
 
 const categoryController = new CategoryController();
@@ -19,8 +16,6 @@ CategoryRouter.route('/create').post(
 );
 
 CategoryRouter.route('/').get(
-  validator(updateCategorySchema),
-  authMiddleware,
   categoryController.readAllCategories,
   successHandler,
 );
